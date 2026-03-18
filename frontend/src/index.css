@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #030712; 
+    /* Yahan text-slate-200 ko hata kar text-slate-900 (Dark) kar diya */
+    @apply text-slate-900 min-h-screen overflow-x-hidden;
+  }
+}
+
+/* Perfect Glass Effect (BOXES LIGHT HI RAHENGE) */
+.glass {
+  /* Background ko halka sa white tint diya taaki dark text uth kar dikhe */
+  background: rgba(255, 255, 255, 0.15); 
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Text ko globally dark karne ke liye rules */
+h1, h2, h3, h4, span, p, input {
+  color: #000000 !important; /* Ekdum dark grey/black */
+}
+
+/* Placeholder ka color thoda light grey taaki type karne se pehle dikhe */
+input::placeholder {
+  color: #000000 !important;
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+
+@keyframes floating {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+.animate-float {
+  animation: floating 4s ease-in-out infinite;
+}
