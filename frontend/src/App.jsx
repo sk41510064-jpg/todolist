@@ -3,11 +3,10 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, CheckCircle2, Circle, Sparkles, X } from 'lucide-react';
 
-// API URL ko environment variable se uthayenge
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/todos';
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState([]); // Default empty array
   const [title, setTitle] = useState('');
   const [subtask, setSubtask] = useState('');
   const [tempChecklist, setTempChecklist] = useState([]);
@@ -16,9 +15,18 @@ function App() {
 
   const fetchTodos = async () => {
     try {
-      const res = await axios.get(API_URL); // Fixed: Yahan direct API_URL use hoga
-      setTodos(res.data);
-    } catch (err) { console.error("API Error", err); }
+      const res = await axios.get(API_URL);
+      // 🔥 Safety Check: Agar res.data array nahi hai toh empty array set karo
+      if (Array.isArray(res.data)) {
+        setTodos(res.data);
+      } else {
+        console.error("Backend sent non-array data:", res.data);
+        setTodos([]);
+      }
+    } catch (err) { 
+      console.error("API Error", err); 
+      setTodos([]); // Error aane par crash na ho isliye empty array
+    }
   };
 
   const addTempSubtask = () => {
@@ -58,7 +66,6 @@ function App() {
     <div 
       className="min-h-screen text-slate-100 font-sans selection:bg-indigo-500/30"
       style={{
-        // Aapki current choice: thoda dark overlay
         backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.24)), url('/bged.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -131,10 +138,10 @@ function App() {
           </section>
         </div>
 
-        {/* DISPLAY GRID */}
+        {/* DISPLAY GRID - 🔥 Added Array check here too */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 auto-rows-fr">
           <AnimatePresence mode="popLayout">
-            {todos.map((todo) => (
+            {Array.isArray(todos) && todos.map((todo) => (
               <motion.div
                 layout
                 initial={{ opacity: 0, y: 20 }}
