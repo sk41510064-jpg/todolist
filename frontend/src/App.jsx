@@ -3,20 +3,23 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, CheckCircle2, Circle, Sparkles, X } from 'lucide-react';
 
+// API URL config: Vite .env se uthayega ya default localhost use karega
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/todos';
 
 function App() {
-  const [todos, setTodos] = useState([]); // Default empty array
+  const [todos, setTodos] = useState([]); // Default empty array safety ke liye
   const [title, setTitle] = useState('');
   const [subtask, setSubtask] = useState('');
   const [tempChecklist, setTempChecklist] = useState([]);
 
-  useEffect(() => { fetchTodos(); }, []);
+  useEffect(() => { 
+    fetchTodos(); 
+  }, []);
 
   const fetchTodos = async () => {
     try {
       const res = await axios.get(API_URL);
-      // 🔥 Safety Check: Agar res.data array nahi hai toh empty array set karo
+      // 🔥 Safety Check: Render par non-array data (HTML/String) aane par crash nahi hoga
       if (Array.isArray(res.data)) {
         setTodos(res.data);
       } else {
@@ -25,7 +28,7 @@ function App() {
       }
     } catch (err) { 
       console.error("API Error", err); 
-      setTodos([]); // Error aane par crash na ho isliye empty array
+      setTodos([]); 
     }
   };
 
@@ -44,22 +47,30 @@ function App() {
     if (!title.trim()) return;
     try {
       await axios.post(API_URL, { title, checklist: tempChecklist });
-      setTitle(''); setTempChecklist([]); fetchTodos();
-    } catch (err) { alert("Save failed"); }
+      setTitle(''); 
+      setTempChecklist([]); 
+      fetchTodos();
+    } catch (err) { 
+      alert("Save failed - Check backend connection"); 
+    }
   };
 
   const toggleSubtask = async (tId, iId) => {
     try {
       await axios.patch(`${API_URL}/${tId}/checklist/${iId}`);
       fetchTodos();
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+      console.error(err); 
+    }
   };
 
   const deleteTodo = async (id) => {
     try {
       await axios.delete(`${API_URL}/${id}`);
       fetchTodos();
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+      console.error(err); 
+    }
   };
 
   return (
@@ -75,7 +86,7 @@ function App() {
       <div className="p-6 md:p-12 max-w-5xl mx-auto">
         
         {/* LOGO SECTION */}
-        <header className="flex flex-col items-center mb-16 animate-float">
+        <header className="flex flex-col items-center mb-16">
           <div className="glass px-6 py-2 rounded-2xl flex items-center gap-3">
             <Sparkles className="text-indigo-400 w-5 h-5" />
             <h1 className="text-4xl font-black bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent italic tracking-tight">
@@ -84,7 +95,7 @@ function App() {
           </div>
         </header>
 
-        {/* INPUT BOX */}
+        {/* INPUT BOX - MASTER GOAL */}
         <div className="flex justify-center mb-20">
           <section className="glass rounded-[2.5rem] p-8 md:p-10 w-full max-w-2xl border border-white/5 shadow-2xl">
             <form onSubmit={saveTodo} className="space-y-6">
@@ -112,7 +123,7 @@ function App() {
                 </button>
               </div>
 
-              {/* TEMP SUBTASKS LIST */}
+              {/* TEMP SUBTASKS CHIPS */}
               <div className="flex flex-wrap gap-2 justify-center">
                 <AnimatePresence>
                   {tempChecklist.map((item, index) => (
@@ -138,7 +149,7 @@ function App() {
           </section>
         </div>
 
-        {/* DISPLAY GRID - 🔥 Added Array check here too */}
+        {/* DISPLAY GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 auto-rows-fr">
           <AnimatePresence mode="popLayout">
             {Array.isArray(todos) && todos.map((todo) => (
