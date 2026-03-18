@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, CheckCircle2, Circle, Sparkles, X } from 'lucide-react';
+import API from './api';
 
 const API_URL = 'http://localhost:5000/api/todos';
 
@@ -15,7 +16,7 @@ function App() {
 
   const fetchTodos = async () => {
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get('/');
       setTodos(res.data);
     } catch (err) { console.error("API Error", err); }
   };
@@ -55,7 +56,7 @@ function App() {
 
   return (
     <div 
-      className="min-h-screen text-slate-900 font-sans selection:bg-indigo-500/30"
+      className="min-h-screen text-slate-100 font-sans selection:bg-indigo-500/30"
       style={{
         // Maine overlay thoda dark rakha hai taaki white cards chamkein
         //backgroundImage: "linear-gradient(rgba(3, 7, 18, 0.85), rgba(3, 7, 18, 0.85)), url('/bged.jpg')",
