@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, CheckCircle2, Circle, Sparkles, X } from 'lucide-react';
-import API from './api';
 
-const API_URL = 'http://localhost:5000/api/todos';
+// API URL ko environment variable se uthayenge
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/todos';
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -16,7 +16,7 @@ function App() {
 
   const fetchTodos = async () => {
     try {
-      const res = await axios.get('/');
+      const res = await axios.get(API_URL); // Fixed: Yahan direct API_URL use hoga
       setTodos(res.data);
     } catch (err) { console.error("API Error", err); }
   };
@@ -58,8 +58,7 @@ function App() {
     <div 
       className="min-h-screen text-slate-100 font-sans selection:bg-indigo-500/30"
       style={{
-        // Maine overlay thoda dark rakha hai taaki white cards chamkein
-        //backgroundImage: "linear-gradient(rgba(3, 7, 18, 0.85), rgba(3, 7, 18, 0.85)), url('/bged.jpg')",
+        // Aapki current choice: thoda dark overlay
         backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.24)), url('/bged.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -78,7 +77,7 @@ function App() {
           </div>
         </header>
 
-        {/* INPUT BOX - CENTERED & CLEAN */}
+        {/* INPUT BOX */}
         <div className="flex justify-center mb-20">
           <section className="glass rounded-[2.5rem] p-8 md:p-10 w-full max-w-2xl border border-white/5 shadow-2xl">
             <form onSubmit={saveTodo} className="space-y-6">
@@ -132,7 +131,7 @@ function App() {
           </section>
         </div>
 
-        {/* DISPLAY GRID - SYMMETRICAL */}
+        {/* DISPLAY GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 auto-rows-fr">
           <AnimatePresence mode="popLayout">
             {todos.map((todo) => (
